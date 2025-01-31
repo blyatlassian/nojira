@@ -1,0 +1,38 @@
+{
+	"name": "Monorepo DevContainer",
+	"dockerComposeFile": "docker-compose.dev.yml",
+	"service": "webapp",
+	"workspaceFolder": "/workspace",
+	"customizations": {
+	  "vscode": {
+		"extensions": [
+			"dbaeumer.vscode-eslint",
+			"esbenp.prettier-vscode",
+			"graphql.vscode-graphql",
+			"ms-azuretools.vscode-docker",
+			"ms-vscode.vscode-typescript-next",
+			"eamodio.gitlens",
+			"mikestead.dotenv",
+			"rangav.vscode-thunder-client"
+		]
+	  }
+	},
+	"mounts": [
+	  "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+	],
+	"remoteEnv": {
+	  "NODE_ENV": "development"
+	},
+	"postCreateCommand": "sh .devcontainer/postCreateCommand.sh",
+	"features": {
+	  "docker-in-docker": "latest",
+	  "github-cli": "latest"
+	},
+	"forwardPorts": [3000, 4000, 8080],
+	"portsAttributes": {
+	  "3000": { "label": "WebApp (React)" },
+	  "4000": { "label": "AppServer (NestJS)" },
+	  "8080": { "label": "Dgraph Database" }
+	}
+  }
+  

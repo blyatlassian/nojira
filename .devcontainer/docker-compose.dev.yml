@@ -1,0 +1,52 @@
+version: "3.9"
+services:
+  # appserver:
+  #   image: mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm
+  #   working_dir: /workspace/appserver
+  #   volumes:
+  #     - ..:/workspace
+  #   command: yarn start:dev  # Auto-start NestJS in watch mode
+  #   environment:
+  #     - NODE_ENV=development
+  #     - DGRAPH_URL=http://dgraph:8080
+  #     - CHOKIDAR_USEPOLLING=true  # Ensures file changes are detected
+  #   ports:
+  #     - "4000:4000"
+  #   depends_on:
+  #     - dgraph
+
+  webapp:
+    image: mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm
+    working_dir: /workspace/webapp
+    volumes:
+      - ..:/workspace
+    command: yarn dev  # Auto-start Vite dev server
+    environment:
+      - NODE_ENV=development
+    ports:
+      - "5173:3000"
+    depends_on:
+      - dgraph
+      # - appserver
+
+  dgraph-ratel:
+    image: dgraph/ratel:latest
+    container_name: ratel
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    depends_on:
+      - dgraph
+  dgraph:
+    image: dgraph/standalone:latest
+    container_name: dgraph
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+      - "9080:9080"
+    volumes:
+      - dgraph_data:/dgraph
+  
+
+volumes:
+  dgraph_data:
