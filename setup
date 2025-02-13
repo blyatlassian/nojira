@@ -1,0 +1,45 @@
+#!/bin/bash
+
+echo "🔐 GitHub OAuth Setup"
+echo "Please refer to the 'GitHub OAuth Setup' section in README.md"
+echo "You will need to create a new OAuth app at https://github.com/settings/developers"
+echo "with the following settings:"
+echo "  - Homepage URL: http://localhost:8081"
+echo "  - Authorization callback URL: http://localhost:8081"
+echo ""
+
+# Prompt for GitHub credentials
+read -p "Enter GitHub Client ID: " github_client_id
+read -p "Enter GitHub Client Secret: " github_client_secret
+
+# Create .env files from .env.sample if they don't exist
+if [ ! -f "appserver/.env" ] && [ -f "appserver/.env.sample" ]; then
+    echo "Creating appserver/.env from .env.sample"
+    cp appserver/.env.sample appserver/.env
+
+    # Update GitHub credentials in appserver/.env
+    sed -i '' "s/GITHUB_CLIENT_ID=.*/GITHUB_CLIENT_ID=$github_client_id/" appserver/.env
+    sed -i '' "s/GITHUB_CLIENT_SECRET=.*/GITHUB_CLIENT_SECRET=$github_client_secret/" appserver/.env
+fi
+
+if [ ! -f "webapp/.env" ] && [ -f "webapp/.env.sample" ]; then
+    echo "Creating webapp/.env from .env.sample"
+    cp webapp/.env.sample webapp/.env
+
+    # Update GitHub credentials in webapp/.env
+    sed -i '' "s/VITE_GITHUB_CLIENT_ID=.*/VITE_GITHUB_CLIENT_ID=$github_client_id/" webapp/.env
+fi
+
+# Run yarn in all directories in parallel
+yarn &
+yarn --cwd appserver &
+yarn --cwd webapp &
+
+# Wait for all processes to complete
+wait
+
+echo "✨ Setup completed successfully"
+echo "
+🚀 To start the development servers, run:
+   yarn dev
+"
