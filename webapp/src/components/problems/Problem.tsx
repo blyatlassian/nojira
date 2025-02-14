@@ -48,6 +48,7 @@ export default function Problem({ id }: ProblemProps) {
         <pre>{JSON.stringify(ghu.data?.login, null, 2)}</pre>
       </div>
       <Edit
+        problemId={id}
         editing={editing}
         mutation={mutateProblem}
         title={data.getProblem?.title}
