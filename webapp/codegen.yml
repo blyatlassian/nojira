@@ -1,23 +1,23 @@
 overwrite: true
 schema: 'https://green-feather-41451536.ap-south-1.aws.cloud.dgraph.io/graphql'
 documents:
-  - 'src/**/*.graphql'
+  - 'src/documents/**/*.ts'
 generates:
   src/types/graphql.gen.ts:
     plugins:
       - typescript
-  src/:
-    preset: near-operation-file
-    presetConfig:
-      baseTypesPath: types/graphql.gen.ts
-      folder: types
-      extension: .gen.ts
-    plugins:
-      - typescript-operations
-      - typescript-react-apollo
-      - named-operations-object
-    config:
-      reactApolloVersion: 3
-      withHOC: false
-      withHooks: true
-      withComponent: false
+  # src/:
+  #   preset: near-operation-file
+  #   presetConfig:
+  #     baseTypesPath: types/graphql.gen.ts
+  #     folder: types
+  #     extension: .gen.ts
+  #   plugins:
+  #     - typescript-operations
+  #     - typescript-react-apollo
+  #     - named-operations-object
+  #   config:
+  #     reactApolloVersion: 3
+  #     withHOC: false
+  #     withHooks: true
+  #     withComponent: false

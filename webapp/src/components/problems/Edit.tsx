@@ -12,10 +12,14 @@ import {
   FormMessage,
 } from '../ui/form';
 import { Input } from '../ui/input';
+import { UPDATE_PROBLEM } from '@/documents/problems/mutation';
+import { Problem, UpdateProblemInput } from '@/types/graphql.gen';
+import { useAppMutation } from '@/hooks/useAppMutation';
 
 type EditProps = {
   editing?: 'title' | 'body' | null;
   title: string;
+  problemId: string;
   mutation: (title?: string) => void;
 };
 
@@ -28,16 +32,28 @@ const formSchema = z.object({
     .max(140, { message: 'Problem statement MUST NOT exceeed 140 characters' }),
 });
 
-export default function Edit({ editing, title, mutation }: EditProps) {
+export default function Edit({ editing, title, problemId }: EditProps) {
+  const { execute } = useAppMutation<Problem, { input: UpdateProblemInput }>(
+    UPDATE_PROBLEM
+  );
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       inputTitle: title,
     },
   });
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    mutation(values.inputTitle);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    // mutation(values.inputTitle);
+    const result = await execute({
+      input: {
+        filter: { id: [problemId] },
+        set: { title: values.inputTitle },
+      },
+    });
+
     console.log(values);
+    console.log({ result });
   }
   if (editing === 'title') {
     return (
